@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>2S Fiber - لوحة التحكم</title>
+    
+    <link rel="apple-touch-icon" href="logo.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="2S Fiber">
+
+    <style>
+        body, html { 
+            margin: 0; padding: 0; height: 100%; width: 100%; 
+            overflow: hidden; background: #010c1c;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        /* واجهة الدخول الترحيبية */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 35px; padding: 40px;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            width: 80%; max-width: 300px;
+            text-align: center; color: white;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            animation: fadeIn 0.8s ease-out;
+            z-index: 10;
+        }
+
+        img.logo { width: 100px; height: 100px; border-radius: 22px; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+
+        .btn {
+            display: block; padding: 16px;
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white; text-decoration: none; border-radius: 15px;
+            font-weight: bold; font-size: 19px;
+            box-shadow: 0 5px 15px rgba(0,123,255,0.4);
+            transition: 0.3s;
+        }
+        .btn:active { transform: scale(0.95); }
+
+        /* الإطار المخفي للراديوس */
+        iframe { 
+            border: none; width: 100%; height: 100%; 
+            position: absolute; top: 0; left: 0; 
+            display: none; /* يظهر فقط في وضع Standalone */
+        }
+
+        @media (display-mode: standalone) {
+            .glass-card { display: none; }
+            iframe { display: block; }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <div class="glass-card">
+        <img src="logo.png" alt="2S Fiber" class="logo">
+        <h2 style="margin:0 0 10px 0;">2S Fiber</h2>
+        <p style="font-size:14px; opacity:0.8; margin-bottom:25px;">مرحباً بك.. اضغط للدخول</p>
+        <a href="http://23.94.120.164:7404/user/login.php" class="btn">دخول المشتركين</a>
+    </div>
+    <iframe src="http://23.94.120.164:7404/user/login.php"></iframe>
+</body>
+</html>
