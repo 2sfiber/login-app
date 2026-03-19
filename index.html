@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>2S Fiber - بوابة المشتركين</title>
+    
+    <link rel="apple-touch-icon" href="logo.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <style>
+        body, html { 
+            margin: 0; padding: 0; height: 100%; width: 100%; 
+            overflow: hidden; background: #010c1c;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        /* خلفية متدرجة مع حركة خفيفة */
+        .bg-glow {
+            position: absolute; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #0a2d5e 0%, #010c1c 100%);
+            z-index: 1;
+        }
+
+        /* تصميم الزجاج البلوري مع حركة ظهور */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 40px; padding: 45px 30px;
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255,255,255,0.12);
+            width: 85%; max-width: 320px;
+            text-align: center; color: white;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+            z-index: 10; position: relative;
+            animation: slideUp 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        /* حركة نبض خفيفة للشعار */
+        img.logo { 
+            width: 110px; height: 110px; border-radius: 28px; 
+            margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: pulseLogo 3s infinite ease-in-out;
+        }
+
+        h2 { margin: 0 0 10px 0; font-size: 26px; font-weight: 700; }
+        p { font-size: 14px; opacity: 0.7; margin-bottom: 35px; line-height: 1.6; }
+
+        /* زر دخول بمؤثر نبض (Pulse) لجذب الانتباه */
+        .btn {
+            display: block; padding: 18px;
+            background: linear-gradient(135deg, #007bff 0%, #004085 100%);
+            color: white; text-decoration: none; border-radius: 20px;
+            font-weight: 700; font-size: 20px;
+            box-shadow: 0 8px 20px rgba(0,123,255,0.3);
+            transition: all 0.3s ease;
+            animation: pulseBtn 2s infinite;
+        }
+
+        .btn:active { transform: scale(0.95); }
+
+        /* تعريف الحركات (Animations) */
+        @keyframes slideUp { 
+            from { opacity: 0; transform: translateY(40px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        @keyframes pulseLogo { 
+            0%, 100% { transform: scale(1); } 
+            50% { transform: scale(1.04); } 
+        }
+        @keyframes pulseBtn {
+            0% { box-shadow: 0 0 0 0 rgba(0,123,255,0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(0,123,255,0); }
+            100% { box-shadow: 0 0 0 0 rgba(0,123,255,0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+    <div class="glass-card">
+        <img src="logo.png" alt="2S Fiber" class="logo">
+        <h2>2S Fiber</h2>
+        <p>مرحباً بك في بوابة الإدارة<br>العنوان الجديد: my.2s.org</p>
+        
+        <a href="http://my.2s.org:7404/user/login.php" target="_blank" class="btn">دخول للمشتركين</a>
+    </div>
+</body>
+</html>
+
