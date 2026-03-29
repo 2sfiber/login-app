@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>2S Fiber - لوحة التحكم</title>
+    
+    <link rel="preload" as="image" href="logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="link" href="http://advrapp.com:7404">
+    
+    <link rel="manifest" href="manifest.json?v=11"> 
+    <link rel="apple-touch-icon" href="logo.png">
+    
+    <meta name="theme-color" content="#010c1c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        @font-face { font-family: 'Cairo'; font-display: swap; }
+        * { -webkit-user-select: none; user-select: none; box-sizing: border-box; font-family: 'Cairo', sans-serif !important; }
+        
+        body, html { 
+            margin: 0; padding: 0; min-height: 100dvh; width: 100%; 
+            background: #010c1c; 
+            display: flex; flex-direction: column; align-items: center; 
+            overflow-x: hidden;
+        }
+        
+        .bg-glow { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: linear-gradient(to bottom, #0a2d5e 0%, #010c1c 100%); 
+            z-index: -1; 
+        }
+
+        #floating-clock {
+            align-self: flex-end; margin: 15px 15px 10px 0;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            color: #ffc107; padding: 6px 14px; border-radius: 10px;
+            font-size: 13px; font-weight: 700; z-index: 100;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            direction: ltr; white-space: nowrap; text-align: center;
+        }
+
+        .news-ticker-container {
+            width: 100%; overflow: hidden; background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px); border-top: 1px solid rgba(255, 193, 7, 0.1);
+            border-bottom: 1px solid rgba(255, 193, 7, 0.1);
+            z-index: 90; padding: 8px 0; margin-bottom: auto; 
+        }
+
+        .ticker-text {
+            display: inline-block; white-space: nowrap; color: #ffffff;
+            font-size: 12px; font-weight: 600; animation: ticker-arabic 25s linear infinite;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.2); will-change: transform;
+        }
+
+        @keyframes ticker-arabic { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.06); border-radius: 35px; padding: 35px 20px;
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 193, 7, 0.2); width: 90%; max-width: 340px;
+            text-align: center; color: white; box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+            z-index: 10; position: relative; margin-bottom: auto; 
+            animation: slideUp 0.5s ease-out;
+        }
+
+        img.logo { width: 85px; height: 85px; border-radius: 20px; margin-bottom: 15px; border: 2px solid rgba(255, 193, 7, 0.3); animation: pulseLogo 3s infinite; }
+        h2 { margin: 0 0 5px 0; font-size: 20px; font-weight: 700; color: #ffc107; }
+        .welcome { font-size: 13px; opacity: 0.8; margin-bottom: 25px; }
+
+        .btn {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 15px; background: linear-gradient(135deg, #ffc107 0%, #e6ac00 100%);
+            color: #000; text-decoration: none; border-radius: 16px;
+            font-weight: 700; font-size: 18px; margin-bottom: 20px; cursor: pointer; border: none;
+            animation: pulseBtn 2s infinite; transition: 0.2s;
+        }
+
+        .install-link-btn { display: inline-block; padding: 10px 18px; background: rgba(255, 193, 7, 0.1); color: #ffc107; border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 12px; font-size: 13px; margin-bottom: 25px; cursor: pointer; }
+
+        .support-section { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
+        .support-title { font-size: 11px; opacity: 0.6; margin-bottom: 10px; color: #fff; }
+        .contact-row { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .contact-item { color: #4db8ff; text-decoration: none; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }
+
+        /* شاشة التحميل المنبثقة (Popup) */
+        .full-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            z-index: 4000; justify-content: center; align-items: center;
+        }
+
+        .loader-popup {
+            background: rgba(20, 25, 40, 0.95); border: 1.5px solid rgba(255, 193, 7, 0.4);
+            width: 85%; max-width: 320px; border-radius: 28px; padding: 35px 20px;
+            text-align: center; color: white; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+        }
+
+        .spinner-ring {
+            width: 55px; height: 55px; border: 4px solid rgba(255, 255, 255, 0.05);
+            border-top: 4px solid #ffc107; border-radius: 50%;
+            animation: spin 0.8s linear infinite; margin: 0 auto 20px auto;
+        }
+
+        .success-icon {
+            width: 60px; height: 60px; background: #28a745; color: white;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 30px; margin: 0 auto 20px auto; animation: popIn 0.5s ease;
+            box-shadow: 0 0 20px rgba(40, 167, 69, 0.4);
+        }
+
+        /* بنر التحديث الجديد */
+        #update-banner {
+            display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: #ffc107; color: #000; padding: 12px 18px; border-radius: 15px;
+            z-index: 5000; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            flex-direction: row; align-items: center; gap: 12px; width: 90%; max-width: 350px;
+            animation: slideUpPopup 0.5s ease;
+        }
+        .update-btn { background: #010c1c; color: #ffc107; border: none; padding: 8px 15px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 13px; }
+
+        /* Modals */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px); z-index: 1000; justify-content: center; align-items: center; }
+        .alert-box { background: rgba(20, 20, 30, 0.98); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 30px; padding: 30px 20px; width: 88%; max-width: 310px; text-align: center; color: white; animation: popIn 0.4s ease-out; }
+        .close-btn { background: #ffc107; color: #000; padding: 12px 35px; border-radius: 14px; border: none; font-weight: bold; font-size: 16px; margin-top: 25px; width: 100%; cursor: pointer; }
+
+        @keyframes popIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUpPopup { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+        @keyframes pulseLogo { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes pulseBtn { 0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.3); } 70% { box-shadow: 0 0 0 10px rgba(255, 193, 7, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); } }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+    <div class="bg-glow"></div>
+    <div id="floating-clock">--:--:-- --</div>
+    
+    <div class="news-ticker-container">
+        <div class="ticker-text">📢 نرحب بكم في شبكة 2S Fiber .. يمكنكم الحصول على معلومات الاشتراك في الخدمه عبر التواصل مع خدمة العملاء بالأسفل</div>
+    </div>
+
+    <div class="glass-card">
+        <img src="logo.png" alt="2S" class="logo">
+        <h2>شبكة تو إس - فايبر 🚀</h2>
+        <p class="welcome">👋 مرحباً بك في لوحة التحكم الخاصه بمشتركي الباقات الشهرية</p>
+        
+        <a href="http://advrapp.com:7404/user/login.php" class="btn"><span>🌐</span> اضغط للدخول</a>
+        
+        <div onclick="showInstallAlert()" class="install-link-btn">📲 تثبيت الصفحة كتطبيق</div>
+        
+        <div class="support-section">
+            <div class="support-title">🛠️ للاستفسارات يرجى التواصل مع خدمة العملاء:</div>
+            <div class="contact-row">
+                <a href="https://wa.me/967774465817" class="contact-item">💬 774465817</a>
+                <a href="https://wa.me/967771926657" class="contact-item">💬 771926657</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="update-banner">
+        <span style="flex-grow: 1; font-size: 13px; font-weight: 600;">✨ تحديث جديد متاح للتطبيق!</span>
+        <button class="update-btn" onclick="updateApp()">تحديث</button>
+    </div>
+
+    <div id="loader-container" class="full-overlay">
+        <div class="loader-popup">
+            <img src="logo.png" style="width:70px; margin-bottom:15px; border-radius:15px;" alt="2S">
+            <div class="spinner-ring"></div>
+            <h3 style="color:#ffc107; margin-bottom:10px;">جاري التثبيت...</h3>
+            <p style="font-size:14px; opacity:0.7;">يتم الآن إضافة تطبيق 2S Fiber إلى هاتفك</p>
+        </div>
+    </div>
+
+    <div id="success-container" class="full-overlay">
+        <div class="loader-popup">
+            <div class="success-icon">✓</div>
+            <h3 style="color:#28a745; margin-bottom:10px;">تم التثبيت بنجاح</h3>
+            <p style="font-size:14px; opacity:0.8;">ستجد أيقونة التطبيق الآن على شاشتك الرئيسية</p>
+            <button class="close-btn" style="background:#28a745; color:white;" onclick="closeAlert('success-container')">بدء الاستخدام</button>
+        </div>
+    </div>
+
+    <div id="install-alert" class="modal-overlay">
+        <div class="alert-box">
+            <h3 style="color:#ffc107">📲 تثبيت الصفحة كتطبيق</h3>
+            <p id="install-instruction" style="text-align: right; line-height: 1.8; font-size:14px;"></p>
+            <button class="close-btn" onclick="closeAlert('install-alert')">فهمت ذلك</button>
+        </div>
+    </div>
+
+    <div id="friday-alert" class="modal-overlay">
+        <div class="alert-box">
+            <h3 style="color:#ffc107">🕌 جمعة مباركة</h3>
+            <p style="font-size:16px;">أسرة <b>2S Fiber</b> تهنئكم بحلول يوم الجمعة.. طيب الله جمعتكم بكل خير ✨</p>
+            <button class="close-btn" onclick="closeAlert('friday-alert')">آمين، شكراً</button>
+        </div>
+    </div>
+
+    <script>
+        let deferredPrompt;
+        let newWorker;
+
+        // نظام تحديث التطبيق ومراقبة السيرفس وركر
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js?v=12').then(reg => {
+                    reg.addEventListener('updatefound', () => {
+                        newWorker = reg.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                // إظهار بنر التحديث عند اكتمال تحميل النسخة الجديدة
+                                document.getElementById('update-banner').style.display = 'flex';
+                            }
+                        });
+                    });
+                });
+            });
+
+            let refreshing;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (refreshing) return;
+                window.location.reload();
+                refreshing = true;
+            });
+        }
+
+        function updateApp() {
+            if (newWorker) newWorker.postMessage('SKIP_WAITING');
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
+
+        async function showInstallAlert() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                
+                if (outcome === 'accepted') {
+                    document.getElementById('install-alert').style.display = 'none';
+                    document.getElementById('loader-container').style.display = 'flex';
+                    
+                    setTimeout(() => {
+                        document.getElementById('loader-container').style.display = 'none';
+                        document.getElementById('success-container').style.display = 'flex';
+                    }, 18000);
+                    
+                    deferredPrompt = null; 
+                }
+                return;
+            }
+
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            const instruction = document.getElementById('install-instruction');
+            if (isIOS) {
+                instruction.innerHTML = `<span style="color:#ffc107">لمستخدمي آيفون:</span><br>1️⃣ افتح الموقع في متصفح <b style="color:#4db8ff">Safari</b>.<br>2️⃣ اضغط زر <b>المشاركة (Share)</b>.<br>3️⃣ اختر <b>(إضافة للشاشة الرئيسية)</b>.<br>4️⃣ اضغط <b>إضافة</b> ✅`;
+            } else {
+                instruction.innerHTML = "1️⃣ اضغط على <b>إعدادات المتصفح</b> (3 نقاط).<br>2️⃣ اختر <b>(إضافة للشاشة الرئيسية)</b>.<br>3️⃣ اضغط <b>إضافة</b> ✅";
+            }
+            document.getElementById('install-alert').style.display = 'flex';
+        }
+
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const ampm = hours >= 12 ? 'مساءً' : 'صباحاً';
+            hours = hours % 12 || 12;
+            document.getElementById('floating-clock').textContent = String(hours).padStart(2, '0') + ":" + minutes + ":" + seconds + " " + ampm;
+        }
+        setInterval(updateClock, 1000); updateClock();
+
+        window.onload = function() {
+            setTimeout(() => {
+                const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+                if (!isStandalone) showInstallAlert(); else checkFriday();
+            }, 800);
+        };
+
+        function closeAlert(id) { document.getElementById(id).style.display = 'none'; if(id === 'install-alert' || id === 'success-container') checkFriday(); }
+        function checkFriday() { if (new Date().getDay() === 5) setTimeout(() => { document.getElementById('friday-alert').style.display = 'flex'; }, 500); }
+        
+        document.addEventListener('contextmenu', e => e.preventDefault());
+    </script>
+</body>
+</html>
