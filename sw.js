@@ -1,0 +1,65 @@
+const CACHE_NAME = '2s-fiber-v22'; // التحديث للإصدار v22 ليتوافق مع تحديثات الصفحة
+
+const ASSETS_TO_CACHE = [
+  './',
+  './index.html?v=22',
+  './logo.png?v=22',
+  './manifest.json?v=22',
+  'https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap'
+];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS_TO_CACHE))
+  );
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) => Promise.all(
+      keys.map((key) => {
+        // حذف أي كاش قديم (v21 وما قبلها) فوراً عند التنشيط
+        if (key !== CACHE_NAME) {
+          console.log('Cleaning old cache:', key);
+          return caches.delete(key);
+        }
+      })
+    ))
+  );
+  return self.clients.claim();
+});
+
+self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+  
+  // تجنب كاش ملف sw.js نفسه لضمان وصول التحديثات
+  if (url.pathname.includes('sw.js')) {
+    return;
+  }
+  
+  // التعامل مع طلبات فحص السيرفرات (advpro.info) - شبكة فقط بدون كاش
+  if (url.hostname === 'advpro.info' || url.hostname === 'advrapp.com') {
+    event.respondWith(fetch(event.request).catch(() => null));
+    return;
+  }
+  
+  event.respondWith(
+    caches.match(event.request).then((cachedResponse) => {
+      const fetchPromise = fetch(event.request).then((networkResponse) => {
+        // تحديث الكاش بالنسخة الجديدة من الشبكة إذا كان الرد ناجحاً
+        if (networkResponse && networkResponse.status === 200) {
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, networkResponse.clone());
+          });
+        }
+        return networkResponse;
+      }).catch(() => {
+        // في حال انقطاع الشبكة، يتم استخدام الكاش
+        return cachedResponse || caches.match(event.request, { ignoreSearch: true });
+      });
+      return cachedResponse || fetchPromise;
+    })
+  );
+});
+
