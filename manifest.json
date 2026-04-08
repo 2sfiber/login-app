@@ -1,0 +1,26 @@
+{
+  "name": "2S Fiber - تو إس فايبر",
+  "short_name": "2S Fiber🚀",
+  "description": "لوحة التحكم لمشتركي شبكة تو إس فايبر",
+  "start_url": "index.html?v=30",
+  "display": "standalone",
+  "background_color": "#010c1c",
+  "theme_color": "#010c1c",
+  "orientation": "portrait",
+  "scope": "./",
+  "icons": [
+    {
+      "src": "logo.png?v=30",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "logo.png?v=30",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
+
