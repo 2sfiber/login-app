@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>البث المباشر - 2S Fiber</title>
+    
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+            --title-color: linear-gradient(135deg, #fceabb 0%, #f8b500 100%);
+            --tag-color: #00ff88;
+            --accent-glow: #00d2ff;
+            --dark-bg: #050505;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --red-gradient: linear-gradient(45deg, #e53935 0%, #b71c1c 100%);
+            --btn-border-light: rgba(0, 210, 255, 0.4);
+            --footer-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            background: var(--dark-bg);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at top, #0a1f3d 0%, #050505 70%);
+            position: relative;
+        }
+
+        /* زر العودة العلوي المحدث v44 */
+        .top-right-back {
+            position: absolute;
+            top: 20px;
+            right: 15px;
+            z-index: 2000;
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.4);
+            color: #ffc107;
+            padding: 10px 18px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .top-right-back:hover {
+            background: rgba(255, 193, 7, 0.2);
+            border-color: #ffc107;
+            box-shadow: 0 0 20px rgba(255, 193, 7, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .top-right-back:active {
+            transform: scale(0.85);
+            background: #ffc107;
+            color: #000;
+        }
+
+        #connection-alert {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(15px);
+            z-index: 10000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #connection-alert.show { 
+            display: flex;
+            animation: modalIn 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        .alert-content {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 75, 43, 0.3);
+            padding: 40px;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            max-width: 90%;
+        }
+
+        #connection-alert i {
+            font-size: 4rem;
+            color: #ff4b2b;
+            margin-bottom: 20px;
+            animation: pulseIcon 2s infinite;
+        }
+
+        .retry-btn {
+            margin-top: 25px;
+            padding: 12px 45px;
+            border-radius: 50px;
+            border: none;
+            background: var(--red-gradient);
+            color: #fff;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(229, 57, 53, 0.3);
+            transition: 0.3s;
+        }
+
+        .header {
+            width: 100%;
+            padding: 1rem 1rem 1.5rem 1rem;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--title-color);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(248, 181, 0, 0.2);
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        .news-ticker {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            margin-bottom: 10px;
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 5px 0;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .news-ticker p {
+            display: inline-block;
+            padding-right: 100%;
+            animation: ticker 30s linear infinite;
+            color: #e0f7fa;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        @keyframes ticker {
+            0% { transform: translate3d(100%, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
+        .info-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            width: 100%;
+            max-width: 1050px;
+            margin-top: 15px;
+            padding: 0 10px;
+        }
+
+        .channel-counter {
+            position: absolute;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--accent-glow);
+            padding: 5px 12px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--accent-glow);
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.1);
+        }
+
+        .current-channel-tag {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--tag-color);
+            background: rgba(0, 255, 136, 0.1);
+            padding: 8px 25px;
+            border-radius: 50px;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.1);
+            transition: all 0.4s ease;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .current-channel-tag.hiding {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        .player-container {
+            width: 94%;
+            max-width: 1050px;
+            margin: 1.5rem auto;
+            border-radius: 20px;
+            overflow: hidden;
+            background: #000;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+            position: relative;
+            aspect-ratio: 16/9;
+        }
+
+        iframe { width: 100%; height: 100%; border: none; display: block; }
+
+        .nav-controls {
+            display: flex;
+            gap: 12px;
+            margin: 1rem 0 6rem 0;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--btn-border-light);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 15px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-btn:hover {
+            border-color: var(--accent-glow);
+            background: rgba(0, 210, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn:active { transform: scale(0.95); }
+
+        .btn-refresh {
+            border-color: #ffc107;
+            color: #ffc107;
+        }
+
+        .floating-btns { position: fixed; bottom: 80px; left: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
+        .floating-btn {
+            width: 55px; height: 55px; border-radius: 18px;
+            background: rgba(0, 210, 255, 0.15); backdrop-filter: blur(10px);
+            border: 1px solid var(--accent-glow); color: var(--accent-glow);
+            display: flex; justify-content: center; align-items: center;
+            font-size: 1.2rem; cursor: pointer; transition: 0.3s;
+        }
+
+        .footer-credits {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: var(--footer-bg); backdrop-filter: blur(12px);
+            padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center; z-index: 900; cursor: pointer;
+            color: rgba(255, 255, 255, 0.9); font-size: 0.8rem; font-weight: 800;
+        }
+
+        .footer-credits b { color: #00ff88; }
+
+        #loader {
+            position: fixed; inset: 0; background: var(--dark-bg); z-index: 11000;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .spinner {
+            width: 50px; height: 50px; border: 3px solid rgba(0, 210, 255, 0.1);
+            border-top-color: var(--accent-glow); border-radius: 50%; animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        @keyframes pulseIcon { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.4rem; margin-top: 35px; }
+            .player-container { width: 98%; border-radius: 10px; }
+            .nav-btn { padding: 10px 18px; font-size: 0.85rem; }
+            .channel-counter { font-size: 0.65rem; padding: 4px 8px; }
+            .current-channel-tag { font-size: 0.85rem; padding: 6px 15px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <div id="loader"><div class="spinner"></div></div>
+
+    <a href="index.html?v=45" class="top-right-back">
+        <i class="fas fa-arrow-right"></i> عودة
+    </a>
+
+    <div id="connection-alert">
+        <div class="alert-content">
+            <i class="fas fa-wifi-slash"></i>
+            <h2 style="margin-bottom: 10px;">عذراً، لا يوجد اتصال!</h2>
+            <p style="color: #ccc; font-size: 0.9rem;">يرجى التحقق من اتصالك بالانترنت !</p>
+            <button class="retry-btn" onclick="location.reload()">تحديث الصفحة</button>
+        </div>
+    </div>
+
+    <header class="header">
+        <div class="news-ticker">
+            <p> ⚠️ في حالة عدم ظهور البث لأي قناة قم بتغيير سيرفر المشاهدة من التبويبات أعلى نافذة البث 📺 • استمتع بمشاهدة قنواتك المفضلة عبر شبكة 2S Fiber 🚀 </p>
+        </div>
+
+        <h1>البث المباشر</h1>
+
+        <div class="info-bar">
+            <div id="chan-num" class="channel-counter">0 / 0</div>
+            <div id="ch-name" class="current-channel-tag">جاري التحميل...</div>
+        </div>
+    </header>
+
+    <div class="player-container">
+        <iframe id="video-player" allowfullscreen="true" allow="autoplay; encrypted-media" sandbox="allow-scripts allow-same-origin allow-presentation"></iframe>
+    </div>
+
+    <div class="nav-controls">
+        <button class="nav-btn" onclick="changeChan(-1)"><i class="fas fa-chevron-right"></i> القناة السابقة</button>
+        <button class="nav-btn btn-refresh" onclick="refreshCurrent()"><i class="fas fa-sync-alt"></i> تحديث</button>
+        <button class="nav-btn" onclick="changeChan(1)">القناة التالية <i class="fas fa-chevron-left"></i></button>
+    </div>
+
+    <div class="floating-btns">
+        <button class="floating-btn" onclick="toggleFS()"><i class="fas fa-expand"></i></button>
+    </div>
+
+    <footer class="footer-credits" onclick="window.open('https://wa.me/+967774465817')">
+        البرمجة والتطوير بواسطة: <b>تو إس - فايبر 🚀</b>
+    </footer>
+
+    <script>
+        const links = [
+            'https://11.yallashoot1.cc/albaplayer/thmanya1/?serv=1', 
+            'https://11.yallashoot1.cc/albaplayer/bein-1/?serv=1', 
+            'https://11.yallashoot1.cc/albaplayer/bein-2/?serv=1', 
+            'https://11.yallashoot1.cc/albaplayer/bein-3/?serv=1',
+            'https://11.yallashoot1.cc/albaplayer/on-time-sport-1/?serv=2',
+            'https://new.aflam4you.net/playerae.php?vid=1&aflam_s=1&aflam_k=99922554',
+            'https://new.aflam4you.net/playerae.php?vid=2&aflam_s=1&aflam_k=99922554',
+            'https://new.aflam4you.net/playerae.php?vid=4&aflam_s=1&aflam_k=99922554',
+            'https://www.youtube.com/embed/bNyUyrR0PHo?autoplay=1',
+            'https://www.youtube.com/embed/n7eQejkXbnM?autoplay=1',
+            'https://www.youtube.com/embed/ymYr5ze2XeA?autoplay=1',
+            'https://new.aflam4you.net/playerae.php?vid=6&aflam_s=1&aflam_k=99922554'
+        ];
+
+        const names = [
+            "القناة الرئيسية", "beIN Sports 1", "beIN Sports 2", "beIN Sports 3", 
+            "On Time Sport", "Koora HD 1", "Koora HD 2", "Koora HD 3", 
+            "الجزيرة الإخبارية", "العربية مباشر", "سكاي نيوز", "MBC 2"
+        ];
+
+        let currentIdx = 0;
+        const player = document.getElementById('video-player');
+        const chName = document.getElementById('ch-name');
+        const chanNum = document.getElementById('chan-num');
+        const alertBox = document.getElementById('connection-alert');
+
+        function updatePlayer() {
+            chName.classList.add('hiding');
+            
+            setTimeout(() => {
+                player.src = links[currentIdx];
+                chName.textContent = " 🖥️ " + names[currentIdx];
+                chanNum.textContent = (currentIdx + 1) + " / " + links.length;
+                chName.classList.remove('hiding');
+            }, 300);
+        }
+
+        function changeChan(dir) {
+            currentIdx = (currentIdx + dir + links.length) % links.length;
+            updatePlayer();
+        }
+
+        function refreshCurrent() {
+            const currentSrc = player.src;
+            player.src = "";
+            setTimeout(() => { player.src = currentSrc; }, 100);
+        }
+
+        function toggleFS() {
+            if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+            else document.exitFullscreen();
+        }
+
+        function checkConnection() {
+            if (!navigator.onLine) alertBox.classList.add('show');
+            else alertBox.classList.remove('show');
+        }
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+            }, 500);
+            updatePlayer();
+        });
+
+        window.addEventListener('online', checkConnection);
+        window.addEventListener('offline', checkConnection);
+        checkConnection();
+    </script>
+</body>
+</html>
